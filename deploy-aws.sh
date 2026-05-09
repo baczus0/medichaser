@@ -6,7 +6,7 @@ if [[ $# -lt 2 || "$1" != "-s" ]]; then
   exit 1
 fi
 
-shift # usuń -s
+shift
 
 if [[ $# -lt 1 ]]; then
   echo "Error: at least one value for -s is required"
@@ -60,7 +60,7 @@ sudo apt-get update
 sudo apt-get install -y git python3.11 python3-pip tmux
 
 rm -rf /home/ubuntu/medichaser
-git clone https://github.com/rafsaf/medichaser.git /home/ubuntu/medichaser
+git clone https://github.com/baczus0/medichaser.git /home/ubuntu/medichaser
 
 cd /home/ubuntu/medichaser
 
