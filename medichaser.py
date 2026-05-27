@@ -394,7 +394,7 @@ class Authenticator:
         log.info("Please enter the MFA code sent to your device and press Enter:")
         rlist, _, _ = select.select([sys.stdin], [], [], 120)
         if rlist:
-            mfa_code = sys.stdin.readline().rstrip("\n")
+            mfa_code = re.sub(r"\s+", "", sys.stdin.readline())
         else:
             log.error("Error getting MFA code input: Timeout expired.")
             raise MFAError("Timeout! Failed to get MFA code input.")
@@ -793,7 +793,7 @@ class Authenticator:
         log.info("Please enter the MFA code sent to your device and press Enter:")
         rlist, _, _ = select.select([sys.stdin], [], [], 60)
         if rlist:
-            mfa_code = sys.stdin.readline().rstrip("\n")
+            mfa_code = re.sub(r"\s+", "", sys.stdin.readline())
         else:
             log.error("Error getting MFA code input: Timeout expired.")
             self._quit_driver()
