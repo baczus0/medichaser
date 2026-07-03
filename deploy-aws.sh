@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if ! aws sts get-caller-identity &>/dev/null; then
+  echo "Not logged in to AWS. Run: aws login"
+  exit 1
+fi
+
 if [[ $# -lt 2 || "$1" != "-s" ]]; then
   echo "Usage: $0 -s <value1> [value2 ...]"
   exit 1
@@ -26,6 +31,8 @@ PUBLIC_IP="$(curl -fsS https://checkip.amazonaws.com | tr -d '[:space:]')"
 cat > "${TF_DIR}/terraform.auto.tfvars" <<EOF
 ssh_cidrs = ["${PUBLIC_IP}/32"]
 EOF
+
+eval "$(aws configure export-credentials --profile default --format env)"
 
 cd "$TF_DIR"
 terraform init -upgrade
