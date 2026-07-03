@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if ! aws sts get-caller-identity &>/dev/null; then
+  echo "Not logged in to AWS. Run: aws login"
+  exit 1
+fi
+
 if [[ $# -lt 2 || "$1" != "-s" ]]; then
   echo "Usage: $0 -s <value1> [value2 ...]"
   exit 1
 fi
 
-shift # usuń -s
+shift
 
 if [[ $# -lt 1 ]]; then
   echo "Error: at least one value for -s is required"
@@ -26,6 +31,8 @@ PUBLIC_IP="$(curl -fsS https://checkip.amazonaws.com | tr -d '[:space:]')"
 cat > "${TF_DIR}/terraform.auto.tfvars" <<EOF
 ssh_cidrs = ["${PUBLIC_IP}/32"]
 EOF
+
+eval "$(aws configure export-credentials --profile default --format env)"
 
 cd "$TF_DIR"
 terraform init -upgrade
@@ -60,7 +67,7 @@ sudo apt-get update
 sudo apt-get install -y git python3.11 python3-pip tmux
 
 rm -rf /home/ubuntu/medichaser
-git clone https://github.com/rafsaf/medichaser.git /home/ubuntu/medichaser
+git clone https://github.com/baczus0/medichaser.git /home/ubuntu/medichaser
 
 cd /home/ubuntu/medichaser
 
